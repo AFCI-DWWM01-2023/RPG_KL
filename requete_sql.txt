@@ -194,9 +194,9 @@ LES REQUETES IMBRIQUEES
 
 3)SELECT * FROM personnage  GROUP BY idPersonnage HAVING level > (SELECT AVG(level) FROM personnage JOIN classe ON personnage.idClasse = classe.idClasse WHERE classe.nom = 'Archer');
 
-******************************************
+======================================
 Des requêtes imbriquées plus complexes
-******************************************
+======================================
 
 1)SELECT COUNT(typearme.estDistance) AS `Nb d'arme à distance` from typearme INNER JOIN arme ON typearme.idTypeArme = arme.idTypeArme INNER JOIN personnage on arme.idArme = personnage.idArmeUtilise WHERE typearme.estDistance=1;
 
