@@ -183,3 +183,92 @@ LES GROUPEMENT
 2) SELECT arme.nom, COUNT(*) AS `Nb de joueurs` FROM arme RIGHT JOIN dispose ON arme.idArme = dispose.idArme GROUP BY arme.idArme HAVING COUNT(*)<3;
 
 3) SELECT typearme.libelle AS `Type d'arme`, COUNT(idArme) AS `Nb d'armes` FROM arme RIGHT JOIN typearme ON typearme.idTypeArme = arme.idTypeArme WHERE estDistance = 0 GROUP BY typearme.idTypeArme HAVING COUNT(idArme)<2;
+
+=======================
+LES REQUETES IMBRIQUEES
+=======================
+
+1)SELECT nom , degat FROM arme  GROUP BY idArme HAVING degat > (SELECT AVG(degat) FROM arme);
+
+2)SELECT * FROM personnage  GROUP BY idPersonnage HAVING level < (SELECT AVG(level) FROM personnage);
+
+3)SELECT * FROM personnage  GROUP BY idPersonnage HAVING level > (SELECT AVG(level) FROM personnage JOIN classe ON personnage.idClasse = classe.idClasse WHERE classe.nom = 'Archer');
+
+******************************************
+Des requêtes imbriquées plus complexes
+******************************************
+
+1)SELECT COUNT(typearme.estDistance) AS `Nb d'arme à distance` from typearme INNER JOIN arme ON typearme.idTypeArme = arme.idTypeArme INNER JOIN personnage on arme.idArme = personnage.idArmeUtilise WHERE typearme.estDistance=1;
+
+==========================================================
+Les requêtes de gestion (CRUD) : Création / Modification /
+Suppression de tables ou de lignes
+==========================================================
+
+======================
+1°) Gestion des tables
+======================
+
+1)CREATE TABLE `attaque` (
+  `idAttaque` int(11) NOT NULL,
+  `nom` varchar(60) NOT NULL,
+  `baseDegat` int(10) NOT NULL,
+  `test` TINYINT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+2)ALTER TABLE `attaque`
+  ADD PRIMARY KEY (`idAttaque`);
+ 
+ 
+ALTER TABLE `attaque`
+  MODIFY `idAttaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+3)ALTER TABLE `attaque`
+  MODIFY `test` varchar(50);
+
+4)alter table attaque
+ change `test` `toto` int not null;
+ 
+5)alter table attaque
+ drop `toto`;
+
+6)CREATE TABLE `utilise` (
+  `idAttaque` int(11) NOT NULL,
+  `idPersonnage` int(11) NOT NULL,
+  `levelAttaque` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+=======================
+2°) Gestion des données
+=======================
+
+1)ALTER TABLE `utilise`
+  ADD KEY `FK_ID_ATTAQUE` (`idAttaque`);
+
+2)INSERT INTO `attaque` (`idAttaque`, `nom`, `baseDegat`) VALUES
+(1, 'attaque1', 5),
+(2, 'attaque2', 10),
+(3, 'attaque3', 15),
+(4, 'attaque4', 20);
+
+3)INSERT INTO `utilise` (`idAttaque`, `idPersonnage`, `levelAttaque`) VALUES
+(1, 1, 2),
+(2, 1, 2),
+(2, 2, 1),
+(4, 3, 2),
+(1, 4, 3),
+(4, 5, 3);
+ 
+update attaque set `baseDegat` = 10;
+ 
+update attaque set `baseDegat` = 50 where idAttaque in(2,3);
+
+4)alter table personnage add `dateNaissance` date;
+ 
+update personnage set dateNaissance = '2001-01-01' where idPersonnage = 1;
+update personnage set dateNaissance = '2001-02-01' where idPersonnage = 2;
+update personnage set dateNaissance = '2002-03-01' where idPersonnage = 3;
+update personnage set dateNaissance = '2003-06-01' where idPersonnage = 4;
+update personnage set dateNaissance = '2001-04-01' where idPersonnage = 5;
+update personnage set dateNaissance = '2007-02-01' where idPersonnage = 6;
+update personnage set dateNaissance = '2003-05-01' where idPersonnage = 7;
